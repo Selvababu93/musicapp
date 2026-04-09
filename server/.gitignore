@@ -5,3 +5,4 @@ app.egg-info
 .cache
 .venv
 .DS_Store
+.env

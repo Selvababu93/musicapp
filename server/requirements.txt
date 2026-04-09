@@ -1,1 +1,6 @@
 fastapi[standard]
+SQLAlchemy
+python-dotenv
+psycopg2-binary
+python-jose[cryptography]
+bcrypt
