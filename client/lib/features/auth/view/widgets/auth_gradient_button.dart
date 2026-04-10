@@ -2,7 +2,11 @@ import 'package:client/core/theme/app_pallete.dart';
 import 'package:flutter/material.dart';
 
 class AuthGradientButton extends StatelessWidget {
-  const AuthGradientButton({super.key, required this.buttonText, required this.onTap});
+  const AuthGradientButton({
+    super.key,
+    required this.buttonText,
+    required this.onTap,
+  });
   final String buttonText;
   final VoidCallback onTap;
 
@@ -12,8 +16,8 @@ class AuthGradientButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Pallete.gradient1, Pallete.gradient2],
-          begin: AlignmentGeometry.bottomLeft,
-          end: AlignmentGeometry.topRight,
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
         ),
         borderRadius: BorderRadius.circular(7),
       ),
@@ -24,7 +28,10 @@ class AuthGradientButton extends StatelessWidget {
           shadowColor: Pallete.transparentColor,
         ),
         onPressed: onTap,
-        child: Text(buttonText, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+        child: Text(
+          buttonText,
+          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+        ),
       ),
     );
   }
