@@ -1,5 +1,4 @@
 import 'package:client/core/theme/theme.dart';
-import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Music App',
       theme: AppTheme.darkThemeMode,
-      home: const LoginPage(),
+      home: const SignupPage(),
     );
   }
 }

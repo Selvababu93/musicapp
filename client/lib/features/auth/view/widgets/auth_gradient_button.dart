@@ -21,6 +21,7 @@ class AuthGradientButton extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(7),
       ),
+      // later will adjust this button size in dynamically according to device width
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           fixedSize: Size(395, 55),

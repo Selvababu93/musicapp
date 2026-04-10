@@ -1,5 +1,5 @@
 import 'package:client/core/theme/app_pallete.dart';
-import 'package:client/features/auth/view/pages/login_page.dart';
+import 'package:client/features/auth/repository/auth_remote_repository.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +16,25 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  Future<void> _signUpUser() async {
+    if (!_formKey.currentState!.validate()) return;
+    try {
+      final response = await AuthRemoteRepository().signup(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      print(response);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Signup successful')));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      print(e.toString());
+    }
+  }
 
   @override
   void dispose() {
@@ -50,7 +69,7 @@ class _SignupPageState extends State<SignupPage> {
                 isObscureText: true,
               ),
               const SizedBox(height: 20),
-              AuthGradientButton(buttonText: 'Sign Up', onTap: () {}),
+              AuthGradientButton(buttonText: 'Sign Up', onTap: _signUpUser),
               const SizedBox(height: 25),
               RichText(
                 text: TextSpan(
