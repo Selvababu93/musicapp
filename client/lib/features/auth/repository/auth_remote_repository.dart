@@ -11,9 +11,24 @@ class AuthRemoteRepository {
       body: jsonEncode({'name': name, 'email': email, 'password': password}),
     );
 
-    print(response.body);
-    print(response.statusCode);
+    // print(response.body);
+    // print(response.statusCode);
     final data = jsonDecode(response.body);
     return data;
+  }
+}
+
+Future<void> login({required String email, required String password}) async {
+  try {
+    final url = Uri.parse("http://127.0.0.1:8900/auth/login");
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"email": email, "password": password}),
+    );
+
+    print(response.body.toString());
+  } catch (e) {
+    print(e.toString());
   }
 }
