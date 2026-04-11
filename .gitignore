@@ -54,7 +54,6 @@ build/
 .flutter-plugins-dependencies
 .dart_tool/
 .packages
-pubspec.lock
 
 # Generated files
 
@@ -71,7 +70,7 @@ android/app/build/
 
 ios/Pods/
 ios/.symlinks/
-ios/Runner.xcworkspace/
+
 
 # =========================
 
