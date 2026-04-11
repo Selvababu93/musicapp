@@ -18,10 +18,11 @@ class CustomField extends StatelessWidget {
       controller: controller,
       obscureText: isObscureText,
       validator: (val) {
-        if (val!.trim().isEmpty) {
-          print('Empty');
-          return "$hintText is empty";
+        if (val == null || val.isEmpty || val.length <= 2 || val.length > 50) {
+          // print('Empty');
+          return "$hintText must be valid";
         }
+        return null;
       },
     );
   }
