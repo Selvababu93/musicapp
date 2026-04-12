@@ -93,7 +93,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Sign Up.', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
+                   const Text('Sign Up.', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 30),
                     CustomField(hintText: 'Name', controller: _nameController),
                     const SizedBox(height: 15),
@@ -108,8 +108,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                     AuthGradientButton(
                       buttonText: 'Sign Up',
                       onTap: () async {
+                        // before calling API checking input
                         if (_formKey.currentState!.validate()) {
-                          final res = await ref
+                          // if input's email, password calling post
+                           await ref
                               .read(authViewModelProvider.notifier)
                               .signUpUser(
                                 name: _nameController.text,
@@ -127,9 +129,9 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
                     InkWell(
                       onTap: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => LoginPage()));
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const LoginPage()));
                       },
-                      child: Text(
+                      child: const Text(
                         'Sign In',
                         style: TextStyle(color: Pallete.gradient2, fontWeight: FontWeight.bold),
                       ),

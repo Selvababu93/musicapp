@@ -7,13 +7,16 @@ part 'auth_viewmodel.g.dart';
 
 final AuthRemoteRepository _authRemoteRepository = AuthRemoteRepository();
 
+// creating class to generate code using riverpod generator
 @riverpod
 class AuthViewModel extends _$AuthViewModel {
+  // asyncvalue will give us three values data,loading, error
   @override
   AsyncValue<UserModel>? build() {
     return null;
   }
 
+  // definig function
   Future<void> signUpUser({
     required String name,
     required String email,
@@ -21,6 +24,16 @@ class AuthViewModel extends _$AuthViewModel {
   }) async {
     state = const AsyncValue.loading();
     final response = await _authRemoteRepository.signup(name: name, email: email, password: password);
+    final val = switch (response) {
+      Left(value: final l) => state = AsyncValue.error(l.message, StackTrace.current),
+      Right(value: final r) => state = AsyncValue.data(r),
+    };
+    print(val);
+  }
+
+  Future<void> loginUser({required String email, required String password}) async {
+    state = const AsyncValue.loading();
+    final response = await _authRemoteRepository.login(email: email, password: password);
 
     final val = switch (response) {
       Left(value: final l) => state = AsyncValue.error(l.message, StackTrace.current),
@@ -29,25 +42,3 @@ class AuthViewModel extends _$AuthViewModel {
     print(val);
   }
 }
-
-// @riverpod
-// class AuthViewmodel extends _$AuthViewModel {
-//   @override
-//   AsyncValue<UserModel>? build() {
-//     return null;
-//   }
-
-//   Future<void> signUpUser({
-//     required String name,
-//     required String email,
-//     required String password,
-//   }) async {
-//     final response = await _authRemoteRepository.signup(name: name, email: email, password: password);
-
-//     final val = switch (response) {
-//       Left(value: final l) => l,
-//       Right(value: final r) => r.name,
-//     };
-//     print(val);
-//   }
-// }

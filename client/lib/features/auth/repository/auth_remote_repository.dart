@@ -43,7 +43,7 @@ class AuthRemoteRepository {
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-      if (response.statusCode != 200) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
         return Left(Failure(message: data['detail']));
       }
       print(data);
