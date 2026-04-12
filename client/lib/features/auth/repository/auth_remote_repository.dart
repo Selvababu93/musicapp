@@ -20,7 +20,7 @@ class AuthRemoteRepository {
         body: jsonEncode({"name": name, "email": email, "password": password}),
       );
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      if (response.statusCode != 200 || response.statusCode != 201) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
         return Left(Failure(message: data['detail']));
       }
       return Right(UserModel.fromMap(data));

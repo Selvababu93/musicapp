@@ -1,19 +1,22 @@
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/repository/auth_remote_repository.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
+import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 
-class SignupPage extends StatefulWidget {
+class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  ConsumerState<SignupPage> createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignupPageState extends ConsumerState<SignupPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -59,47 +62,82 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    // showing loader when loading
+    final isLoading = ref.watch(authViewModelProvider)?.isLoading == true;
+    // to show the error message if there is an error
+    ref.listen(authViewModelProvider, (_, next) {
+      next?.when(
+        data: (data) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(content: Text('Signup successful')),
+            );
+          Navigator.push(context, MaterialPageRoute(builder: (ctx) => const LoginPage()));
+        },
+        error: (error, st) {
+          ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(SnackBar(content: Text(error.toString())));
+        },
+        loading: () {},
+      );
+    });
+    // print(isLoading);
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Sign Up.', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 30),
-              CustomField(hintText: 'Name', controller: _nameController),
-              const SizedBox(height: 15),
-              CustomField(hintText: 'Email', controller: _emailController),
-              const SizedBox(height: 15),
-              CustomField(
-                hintText: 'Password',
-                controller: _passwordController,
-                isObscureText: true,
-              ),
-              const SizedBox(height: 20),
-              AuthGradientButton(buttonText: 'Sign Up', onTap: _signUpUser),
-              const SizedBox(height: 25),
-              Text(
-                'Already have an account? ',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+      body: isLoading
+          ? const Center(child: Loader())
+          : Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Sign Up.', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 30),
+                    CustomField(hintText: 'Name', controller: _nameController),
+                    const SizedBox(height: 15),
+                    CustomField(hintText: 'Email', controller: _emailController),
+                    const SizedBox(height: 15),
+                    CustomField(
+                      hintText: 'Password',
+                      controller: _passwordController,
+                      isObscureText: true,
+                    ),
+                    const SizedBox(height: 20),
+                    AuthGradientButton(
+                      buttonText: 'Sign Up',
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          final res = await ref
+                              .read(authViewModelProvider.notifier)
+                              .signUpUser(
+                                name: _nameController.text,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 25),
+                    Text(
+                      'Already have an account? ',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
 
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => LoginPage()));
-                },
-                child: Text(
-                  'Sign In',
-                  style: TextStyle(color: Pallete.gradient2, fontWeight: FontWeight.bold),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => LoginPage()));
+                      },
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(color: Pallete.gradient2, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
