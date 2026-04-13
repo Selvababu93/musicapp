@@ -63,7 +63,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   @override
   Widget build(BuildContext context) {
     // showing loader when loading
-    final isLoading = ref.watch(authViewModelProvider)?.isLoading == true;
+    final isLoading = ref.watch(authViewModelProvider.select((val) => val?.isLoading == true));
     // to show the error message if there is an error
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(

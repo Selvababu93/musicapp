@@ -47,11 +47,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(context) {
     // check is loading
-    final isLoading = ref.watch(authViewModelProvider)?.isLoading == true;
+    final isLoading = ref.watch(authViewModelProvider.select((val) => val?.isLoading == true));
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(
         data: (data) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => const HomePage()));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => const HomePage()), (_) => false);
         },
         error: (error, st) {
           showSnackbar(context, error.toString());
@@ -87,7 +87,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       buttonText: 'Sign In',
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          await ref
+                          ref
                               .read(authViewModelProvider.notifier)
                               .loginUser(
                                 email: _emailController.text.trim(),
