@@ -1,13 +1,12 @@
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
-import 'package:client/features/auth/repository/auth_remote_repository.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/view/widgets/custom_field.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fpdart/fpdart.dart' hide State;
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -22,35 +21,36 @@ class _SignupPageState extends ConsumerState<SignupPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _signUpUser() async {
-    if (!_formKey.currentState!.validate()) return;
+  // old auth func in testing and devloping phase
+  // Future<void> _signUpUser() async {
+  //   if (!_formKey.currentState!.validate()) return;
 
-    final response = await AuthRemoteRepository().signup(
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+  //   final response = await AuthRemoteRepository().signup(
+  //     name: _nameController.text.trim(),
+  //     email: _emailController.text.trim(),
+  //     password: _passwordController.text.trim(),
+  //   );
 
-    if (!mounted) return;
+  //   if (!mounted) return;
 
-    switch (response) {
-      case Left(value: final failure):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(failure.toString())),
-        );
-        break;
+  //   switch (response) {
+  //     case Left(value: final failure):
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text(failure.toString())),
+  //       );
+  //       break;
 
-      case Right(value: final user):
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signup successful')),
-        );
+  //     case Right(value: final user):
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Signup successful')),
+  //       );
 
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const LoginPage()),
-        );
-        break;
-    }
-  }
+  //       Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (ctx) => const LoginPage()),
+  //       );
+  //       break;
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -68,15 +68,11 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(
         data: (data) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('Signup successful')),
-            );
+          showSnackbar(context, 'Account created successfully!, Please Login');
           Navigator.push(context, MaterialPageRoute(builder: (ctx) => const LoginPage()));
         },
         error: (error, st) {
-          ScaffoldMessenger.of(context)..hideCurrentSnackBar()..showSnackBar(SnackBar(content: Text(error.toString())));
+          showSnackbar(context, error.toString());
         },
         loading: () {},
       );
@@ -93,7 +89,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                   const Text('Sign Up.', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
+                    const Text('Sign Up.', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 30),
                     CustomField(hintText: 'Name', controller: _nameController),
                     const SizedBox(height: 15),
@@ -111,7 +107,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                         // before calling API checking input
                         if (_formKey.currentState!.validate()) {
                           // if input's email, password calling post
-                           await ref
+                          await ref
                               .read(authViewModelProvider.notifier)
                               .signUpUser(
                                 name: _nameController.text,

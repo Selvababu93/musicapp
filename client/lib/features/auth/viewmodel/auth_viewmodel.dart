@@ -5,14 +5,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_viewmodel.g.dart';
 
-final AuthRemoteRepository _authRemoteRepository = AuthRemoteRepository();
-
 // creating class to generate code using riverpod generator
 @riverpod
 class AuthViewModel extends _$AuthViewModel {
+  late AuthRemoteRepository _authRemoteRepository;
   // asyncvalue will give us three values data,loading, error
   @override
   AsyncValue<UserModel>? build() {
+    _authRemoteRepository = ref.watch(authRemoteRepositoryProvider);
     return null;
   }
 

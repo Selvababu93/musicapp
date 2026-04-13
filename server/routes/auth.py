@@ -7,6 +7,7 @@ from schemas.user_login import UserLogin
 from models.user import User
 from database import get_db
 import bcrypt
+import jwt
 
 
 auth_route = APIRouter(tags=['Auth'])
@@ -36,5 +37,7 @@ def login(req : UserLogin, db : Session = Depends(get_db)):
 
     if not is_match:
         raise HTTPException(status_code=401, detail='Invalid password')
+
+    # creting JWT
 
     return user_db
