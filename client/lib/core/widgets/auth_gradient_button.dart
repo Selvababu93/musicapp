@@ -14,7 +14,7 @@ class AuthGradientButton extends StatelessWidget {
   Widget build(context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [Pallete.gradient1, Pallete.gradient2],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
@@ -24,14 +24,14 @@ class AuthGradientButton extends StatelessWidget {
       // later will adjust this button size in dynamically according to device width
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          fixedSize: Size(395, 55),
+          fixedSize: const Size(395, 55),
           backgroundColor: Pallete.transparentColor,
           shadowColor: Pallete.transparentColor,
         ),
         onPressed: onTap,
         child: Text(
           buttonText,
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
         ),
       ),
     );
