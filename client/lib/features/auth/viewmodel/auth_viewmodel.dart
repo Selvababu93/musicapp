@@ -62,6 +62,7 @@ class AuthViewModel extends _$AuthViewModel {
     state = const AsyncValue.loading();
 
     final token = _authLocalRepository.getToken();
+    print("Token: $token");
 
     if (token != null) {
       // send a request to server to get user deatails
@@ -75,7 +76,7 @@ class AuthViewModel extends _$AuthViewModel {
     return null;
   }
 
-  AsyncValue<UserModel> _getDataSucces(UserModel user){
+  AsyncValue<UserModel> _getDataSucces(UserModel user) {
     _currentUserNotifier.addUser(user);
     return state = AsyncValue.data(user);
   }

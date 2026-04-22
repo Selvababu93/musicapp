@@ -20,6 +20,7 @@ class CustomField extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(hintText: hintText),
       readOnly: readOnly,
+      onTap: onTap,
       controller: controller,
       obscureText: isObscureText,
       validator: (val) {
