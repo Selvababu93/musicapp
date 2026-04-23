@@ -10,12 +10,14 @@ import os
 from models.base import Base
 from database import engine
 from routes.auth import auth_route
+from routes.song import song_route
 
 load_dotenv()
 
 app = FastAPI()
 
 app.include_router(auth_route, prefix='/auth')
+app.include_router(song_route, prefix='/song')
 
 
 Base.metadata.create_all(engine)
