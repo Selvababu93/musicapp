@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from middleware.auth_middleware import auth_middleware
 import cloudinary
+from models.song import Song
 load_dotenv()
 
 song_route = APIRouter()
@@ -19,16 +20,21 @@ cloudinary.config(
     secure=True
 )
 
-@song_route.post("/upload")
+@song_route.post("/upload", status_code=201)
 def upload_song(song: UploadFile = File(...), thumbnail : UploadFile = File(...), artist : str = Form(...), song_name : str= Form(...), hex_code : str = Form(...), db: Session = Depends(get_db), auth_dict = Depends(auth_middleware)):
     # uploading files to cloudinary
-    song_id  = uuid4()
+    song_id  = str(uuid4())
     song_result = cloudinary.uploader.upload(file=song.file, resource_type='auto', folder=f'song/{song_id}')
-    print(f"Song_Result: {song_result}")
+    print(song_result['url'])
 
     thumbnail_result = cloudinary.uploader.upload(file=thumbnail.file, resource_type= 'image', folder = f'song/{song_id}')
-    print(f"Thumnail_Result: {thumbnail_result}")
+    print(thumbnail_result['url'])
 
+    # adding to DB
+    new_song = Song(id=song_id, song_url=song_result['url'], thumbnail_url=thumbnail_result['url'], artist=artist, song_name=song_name, hex_code=hex_code)
+    db.add(new_song)
+    db.commit()
+    db.refresh(new_song)
 
     # add records to DB
-    return "Ok"
+    return new_song
